@@ -8,6 +8,7 @@ abstract class Application
     protected $router;
     protected $session;
     protected $db_manager;
+    protected $login_action = array();
 
     public function __construct($debug = false)
     {
@@ -106,6 +107,9 @@ abstract class Application
             $this->runAction($controller, $action, $params);
         } catch (HttpNotFoundException $e) {
             $this->render404Page($e);
+        } catch(UnauthorizedActionException $e) {
+            list($controller, $action) = $this->login_action;
+            $this->runAction($controller, $action);
         }
 
         $this->response->send();
@@ -117,7 +121,8 @@ abstract class Application
         $message = $this->isDebugMode() ? $e->getMessage() : 'Page not found.';
         $message = htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
 
-        $this->response->setContent(<<<EOF
+        $this->response->setContent(
+            <<<EOF
         <!DOCTYPE html>
 <html lang="ja">
 <head>
