@@ -11,14 +11,14 @@ class DbManager
         $params = array_merge(array(
             'dsn' => null,
             'user' => '',
-            'passwords' => '',
+            'password' => '',
             'options' => array(),
         ), $params);
 
         $con = new PDO(
             $params['dsn'],
             $params['user'],
-            $params['passwords'],
+            $params['password'],
             $params['options']
         );
 
